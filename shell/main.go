@@ -14,22 +14,11 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		hostname, _ := os.Hostname()
 		user, _ := user.Current()
+		hostname, _ := os.Hostname()
 		cwd, _ := os.Getwd()
 
-		/*
-			# UNIX colors
-			\033[0m -> CLEAR
-			\033[38;5;45;1m -> BLUE
-			\033[38;5;46;1m -> GREEN
-		*/
-		fmt.Printf(
-			"\033[38;5;46;1m%s@%s\033[0m:\033[38;5;45;1m%s\033[0m$ ",
-			user.Username,
-			hostname,
-			cwd,
-		)
+		PS1(user.Username, hostname, cwd)
 
 		input, err := reader.ReadString('\n')
 		if err != nil {
@@ -64,4 +53,19 @@ func execInput(input string) error {
 	cmd.Stdout = os.Stdout
 
 	return cmd.Run()
+}
+
+func PS1(username, hostname, cwd string) {
+	/*
+		# UNIX colors
+		\033[0m -> CLEAR
+		\033[38;5;45;1m -> BLUE
+		\033[38;5;46;1m -> GREEN
+	*/
+	fmt.Printf(
+		"\033[38;5;46;1m%s@%s\033[0m:\033[38;5;45;1m%s\033[0m$ ",
+		username,
+		hostname,
+		cwd,
+	)
 }
