@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"os/user"
+	"slices"
 	"strings"
 )
 
@@ -31,17 +31,20 @@ func main() {
 }
 
 func execInput(input string) error {
+	builtins := []string{"echo", "exit", "type"}
+
 	input = strings.TrimSuffix(input, "\n")
 
 	args := strings.Split(input, " ")
 
 	switch args[0] {
-	case "cd":
-		if len(args) < 2 {
-			return errors.New("path required")
+	case "type":
+		arg := args[1]
+		if slices.Contains(builtins, arg) {
+			fmt.Println(arg + " is a shell builtin")
+		} else {
+			fmt.Println(arg + ": not found")
 		}
-
-		return os.Chdir(args[1])
 	case "echo":
 		fmt.Println(strings.Join(args[1:], " "))
 	case "exit":
