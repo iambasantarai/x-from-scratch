@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"os/user"
 	"strings"
 )
@@ -43,16 +42,15 @@ func execInput(input string) error {
 		}
 
 		return os.Chdir(args[1])
+	case "echo":
+		fmt.Println(strings.Join(args[1:], " "))
 	case "exit":
 		os.Exit(0)
+	default:
+		fmt.Printf("%s: command not found\n", args[0])
 	}
 
-	cmd := exec.Command(args[0], args[1:]...)
-
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
-
-	return cmd.Run()
+	return nil
 }
 
 func PS1(username, hostname, cwd string) {
@@ -62,7 +60,7 @@ func PS1(username, hostname, cwd string) {
 		\033[38;5;45;1m -> BLUE
 		\033[38;5;46;1m -> GREEN
 	*/
-	fmt.Printf(
+	fmt.Fprintf(os.Stdout,
 		"\033[38;5;46;1m%s@%s\033[0m:\033[38;5;45;1m%s\033[0m$ ",
 		username,
 		hostname,
