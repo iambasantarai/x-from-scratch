@@ -31,8 +31,6 @@ func main() {
 }
 
 func execInput(input string) error {
-	builtins := []string{"echo", "exit", "type"}
-
 	input = strings.TrimSuffix(input, "\n")
 
 	args := strings.Split(input, " ")
@@ -40,7 +38,7 @@ func execInput(input string) error {
 	switch args[0] {
 	case "type":
 		arg := args[1]
-		if slices.Contains(builtins, arg) {
+		if isBuiltinUtil(arg) {
 			fmt.Println(arg + " is a shell builtin")
 		} else {
 			fmt.Println(arg + ": not found")
@@ -69,4 +67,10 @@ func PS1(username, hostname, cwd string) {
 		hostname,
 		cwd,
 	)
+}
+
+func isBuiltinUtil(cmd string) bool {
+	builtins := []string{"echo", "exit", "type"}
+
+	return slices.Contains(builtins, cmd)
 }
