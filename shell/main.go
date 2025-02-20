@@ -48,6 +48,12 @@ func execInput(input string) error {
 		}
 	case "echo":
 		fmt.Println(strings.Join(args[1:], " "))
+	case "pwd":
+		cwd, err := os.Getwd()
+		if err != nil {
+			fmt.Println("Error getting current directory.")
+		}
+		fmt.Println(cwd)
 	case "exit":
 		os.Exit(0)
 	default:
@@ -73,7 +79,7 @@ func PS1(username, hostname, cwd string) {
 }
 
 func isBuiltinUtil(cmd string) bool {
-	builtins := []string{"echo", "exit", "type"}
+	builtins := []string{"echo", "exit", "type", "pwd"}
 
 	return slices.Contains(builtins, cmd)
 }
