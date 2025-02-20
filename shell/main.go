@@ -54,6 +54,20 @@ func execInput(input string) error {
 			fmt.Println("Error getting current directory.")
 		}
 		fmt.Println(cwd)
+	case "cd":
+		path := args[1]
+
+		if path == "~" {
+			if home, err := os.UserHomeDir(); err != nil {
+				fmt.Println("Error getting home directory.")
+			} else {
+				path = home
+			}
+		}
+
+		if err := os.Chdir(path); err != nil {
+			fmt.Println("cd: " + path + ": No such file or directory")
+		}
 	case "exit":
 		os.Exit(0)
 	default:
