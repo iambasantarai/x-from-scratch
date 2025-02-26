@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"os/user"
@@ -31,6 +32,23 @@ func main() {
 	}
 }
 
+func readFileContent(filePath string) ([]string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var content []string
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		content = append(content, scanner.Text())
+	}
+
+	return content, scanner.Err()
+}
+
 func execInput(input string) error {
 	input = strings.TrimSuffix(input, "\n")
 
@@ -48,6 +66,14 @@ func execInput(input string) error {
 		}
 	case "echo":
 		fmt.Println(strings.Join(args[1:], " "))
+	case "cat":
+		filePath := args[1]
+		content, err := readFileContent(filePath)
+		if err != nil {
+			log.Println(err)
+		}
+
+		fmt.Println(strings.Join(content, "\n"))
 	case "pwd":
 		cwd, err := os.Getwd()
 		if err != nil {
@@ -93,7 +119,7 @@ func PS1(username, hostname, cwd string) {
 }
 
 func isBuiltinUtil(cmd string) bool {
-	builtins := []string{"echo", "exit", "type", "pwd"}
+	builtins := []string{"echo", "exit", "type", "pwd", "cat"}
 
 	return slices.Contains(builtins, cmd)
 }
